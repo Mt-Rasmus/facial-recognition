@@ -1,9 +1,7 @@
 %% main
 clc;
 clear;
-close all;
-
-input = imread('images/DB1/db1_05.jpg');
+input = imread('images/DB0/db0_3.jpg');
 imshow(input);
 hold on
 
@@ -26,6 +24,11 @@ imshow(output);
 
 %% Face masking
 
+% Constants for skin regions
+% 0 <= H <= 0.25; 
+% 0.15 <= S <= 0.9
+% 140<=Cr<=165; 
+% 140<=Cb<=195;
 [rows, cols] = size(input(:,:,1));
 img = output;
 % Color space transformation
@@ -42,16 +45,14 @@ imgV = imgHSV(:,:,3);
 % 0?H?0.07 and 0.93?H?1 and 0.2?S?0.6 V?40
 for row = 1:rows
     for col = 1:cols
-        if (imgCr(row,col) < 133 || imgCr(row,col) > 173 && imgCb(row,col) < 77 || imgCb(row,col) >= 127 || imgH(row,col) > 0.07 && imgH(row,col) < 0.93)
-           img(row,col,:) = 0;
-        else 
+        %if (imgCr(row,col) < 133 || imgCr(row,col) > 173 && imgCb(row,col) < 77 || imgCb(row,col) >= 127 || imgH(row,col) > 0.07 && imgH(row,col) < 0.93)
+           %img(row,col,:) = 0;
+        %end
+        if (imgH(row,col) < 0.03 || imgH(row,col) > 0.09)  (imgS(row,col) < 0.9) 
+            img(row,col,:) = 0;
+        else
             img(row,col,:) = 255;
         end
-        %if (imgH(row,col) < 0.03 || imgH(row,col) > 0.09)  
-         %   img(row,col,:) = 0;
-        %else
-         %   img(row,col,:) = 255;
-        %end
     end
 end
 
