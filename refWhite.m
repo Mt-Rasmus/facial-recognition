@@ -1,7 +1,7 @@
 
-function Irw = refWhite(Im)
+function Irw = refWhite(I)
 
-I = imread(Im);
+%I = imread(Im);
 
 hsv = rgb2hsv(I); % First, convert it to HSI space
 v = hsv(:,:,3); %get the illuminance channel
