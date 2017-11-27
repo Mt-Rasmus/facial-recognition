@@ -1,24 +1,20 @@
-function RImage = ImageRotation(OImage, center, degangle, point1, point2)
+function RImage = ImageRotation(OImage, rotationPoint, degangle)
 %FRotate Rotate an image around a given point
-%
+% 
 %% Who has done it
 %
 % Author: Anton Sterner, antst719
 % Co-author: Rasmus Ståhl, rasst403
-%
+% Developed from a template used in the course TNM087 Bildbehandling och bildanalys
 %% Syntax of the function
 %
 % Input arguments:  OImage original image
 %                   center 2-vector with center point of the rotation 
-%                       see the pdf for an definition of center
-%                   degangle rotation angle in degrees, rotation is 
-%                       clockwise
+%                   degangle rotation angle in degrees, rotation is clockwise
 %
 % Output arguments: RImage is the rotated image
 %
 %% Information about the image (size, type etc)
-%       You can assume that it has uint8 pixels 
-%       What should you do if this is not the case?
 %
 [sr,sc,nc] = size(OImage);
 
@@ -31,8 +27,8 @@ ic = [1:sc];%index vector for pixels in the second direction
 
 % NOTE: centerpoint is picked with ginput, so the x & y coords. are
 % switched
-cir = ir - center(1,2);%shifted ir vector so that center(1) is the origin
-cic = ic - center(1,1);%Same for the second axis
+cir = ir - rotationPoint(1,2);%shifted ir vector so that center(1) is the origin
+cic = ic - rotationPoint(1,1);%Same for the second axis
 
 %% Use cir and cic in meshgrid to generate a coordinate grid
 %
@@ -57,9 +53,9 @@ TNew = Theta-rads;% use Theta and rads
 
 % NOTE: centerpoint is picked with ginput, so the x & y coords. are
 % switched
-newir = nR + center(1,2);
+newir = nR + rotationPoint(1,2);
 
-newic = nC + center(1,1);
+newic = nC + rotationPoint(1,1);
 
 %% Now use nearest neighbor interpolation (round) and rotate
 
