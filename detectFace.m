@@ -62,7 +62,7 @@ facemaskR = immultiply(input(:,:,1), binary_uint8/255);
 facemaskG = immultiply(input(:,:,2), binary_uint8/255);
 facemaskB = immultiply(input(:,:,3), binary_uint8/255);
 
-facemask = cat(3, facemaskR, facemaskG, facemaskB);
-
+%facemask = cat(3, facemaskR, facemaskG, facemaskB);
+facemask = binary_uint8;
 end
 
