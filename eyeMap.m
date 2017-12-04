@@ -104,13 +104,4 @@ labeledImage = bwlabel(mm);
  end
 
 
-
-
-
-
-
-
-
-
-
 end

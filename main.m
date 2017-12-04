@@ -27,7 +27,8 @@ figure
 imshow(output);
 title('Color corrected');
 
-faceMask = detectFace(output);
+face = detectFace(output);
+
 figure
 imshow(faceMask);
 
@@ -50,9 +51,61 @@ ymax = centerOfImage(2) + 150;
 
 width = xmax- xmin;
 height = ymax - ymin;
-
-    
 cropped = imcrop(rotatedImage,[xmin ymin width height]);
 
 figure
 imshow(cropped)
+
+
+%% Load images, run detection and create eigenfaces with PCA 
+
+clc;
+clear;
+dirname = 'images/TestDB';
+files = dir(fullfile(dirname, '*.jpg'));
+files = {files.name}';
+
+for i=1:numel(files)
+    fname = fullfile(dirname, files{i});
+    img = imread(fname);
+    output = colorCorrection(img); % Color correct
+    result = detectFace(output);   % Detect face
+    faces_db(:,:,i) = result;
+end
+
+numberofimages = numel(files);
+disp(['Loaded ', num2str(numberofimages), ' faces successfully'])
+
+[X,Y] = size(faces_db(:,:,1));
+n = X*Y;
+% Reshape images to vectors
+faces_db = reshape(faces_db, [n, numberofimages]);
+
+% Run PCA algorithm
+x = double(faces_db);
+meanImage = mean(x');                   % Find average face vector
+A = bsxfun(@minus, x', mean(x'))';      % Subtract the mean for each vector in faces_db
+C = transpose(A) * A;                   % Covariance matrix (MxM) 
+[eigVec, eigVal] = eig(C);              % Eigenvectors and eigenvalues in smaller dimension
+eigenVecLarge = A * eigVec;             % Eigenvectors in bigger dimension (n x n)
+
+% Reshaping the n-dim eigenvectors into matrices (eigenfaces)
+eigenfaces = [];
+for k = 1:numberofimages
+    c  = eigenVecLarge(:,k);
+    eigenfaces{k} = reshape(c,X,Y);
+end
+
+x = diag(eigVal);
+[xc,xci] = sort(x,'descend'); % get largest eigenvalue
+z = [];
+for e = 1:size(xci)
+    z = [z, eigenfaces{xci(e)}];
+end
+
+figure
+imshow(z,'Initialmagnification','fit')
+title('eigenfaces')
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

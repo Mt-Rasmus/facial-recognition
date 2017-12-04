@@ -1,4 +1,4 @@
-function [ facemask ] = detectFace( input )
+function [ face ] = detectFace( input )
 % Detecting face by creating binary face mask
 % Adding face mask to input image
 % Morphing the resulting image
@@ -58,11 +58,43 @@ morphedBinary = enhanceFacemask(binary);
 binary_uint8 = im2uint8(morphedBinary);
 
 % Add original face to face mask
-facemaskR = immultiply(input(:,:,1), binary_uint8/255);
-facemaskG = immultiply(input(:,:,2), binary_uint8/255);
-facemaskB = immultiply(input(:,:,3), binary_uint8/255);
+%facemaskR = immultiply(input(:,:,1), binary_uint8/255);
+%facemaskG = immultiply(input(:,:,2), binary_uint8/255);
+%facemaskB = immultiply(input(:,:,3), binary_uint8/255);
 
 %facemask = cat(3, facemaskR, facemaskG, facemaskB);
-facemask = binary_uint8;
+faceMask = binary_uint8;
+
+%Eye positions
+[eyePos1, eyePos2] = eyeMap(input, faceMask);
+
+
+%Mouth map and mouth position
+[mouthmap, mouthPos] = mouthMap(input);
+
+rotatedImage = face_orientation(input, eyePos1, eyePos2);
+
+%Crop image
+eyeCenter = round((eyePos1 + eyePos2)./2);
+centerOfImage = round((eyeCenter + mouthPos)./2);
+
+figure
+imshow(rotatedImage)
+hold on
+plot(centerOfImage(1), centerOfImage(2), 'c*')
+
+xmin = centerOfImage(1) - 150;
+xmax = centerOfImage(1) + 150;
+ymin = centerOfImage(2) - 200;
+ymax = centerOfImage(2) + 100;
+
+width = xmax- xmin;
+height = ymax - ymin;
+cropped = imcrop(rotatedImage,[xmin ymin width height]);
+
+cropped = imresize(cropped, [400, 250]);
+
+face = rgb2gray(cropped);
+
 end
 
