@@ -1,17 +1,33 @@
 %{
-
-    TNM034 - Facial Recognition
-    HT2017 - Link?ping University
-
-    Process:
-        1. Load image and color correct using Gray World Assumption
-        2. Transform to YCbCr Color space
-        3. Detect face and create face mask
-        4. 
-
+%
+%    TNM034 - Facial Recognition
+%    HT2017 - Link?ping University
+%
+%    Process:
+%        1. Load image and color correct using Gray World Assumption
+%        2. Transform to YCbCr Color space
+%        3. Detect face and create face mask
+%        4. 
+%
 %}
 
-%% Main 
+%% Create database with eigenfaces
+
+clc;
+clear;
+images_folder = 'images/DB1';
+createDatabase(images_folder);
+
+%% Read face image and check if face exists in database
+
+% image_name = 'images/DB1/db1_01.jpg';
+% im = imread(image_name);
+% [ id ] = tnm034(im);
+
+% if id > 0  =>  face exists in database
+
+
+%% OLD MAIN 
 clc;
 clear;
 close all;
@@ -56,68 +72,3 @@ imshow(face);
 %figure
 %imshow(cropped)
 
-
-%% Load images, run detection and create eigenfaces with PCA 
-
-clc;
-clear;
-dirname = 'images/DB1';
-files = dir(fullfile(dirname, '*.jpg'));
-files = {files.name}';
-
-for i=1:numel(files)
-    fname = fullfile(dirname, files{i});
-    img = imread(fname);
-    output = colorCorrection(img); % Color correct
-    result = detectFace(output);   % Detect face
-    %result = rgb2gray(output);          % TEMPORARY FOR TEST
-    faces_db(:,:,i) = result;
-end
-
-numberofimages = numel(files);
-disp(['Loaded ', num2str(numberofimages), ' faces successfully'])
-
-[X,Y] = size(faces_db(:,:,1));
-n = X*Y;
-% Reshape images to vectors
-faces_db = reshape(faces_db, [n, numberofimages]);
-
-% Run PCA algorithm
-x = im2double(faces_db);
-meanImage = mean(x');                   % Find average face vector
-A = bsxfun(@minus, x', mean(x'))';      % Subtract the mean for each vector in faces_db
-C = transpose(A) * A;                   % Covariance matrix (MxM) 
-[eigVec, eigVal] = eig(C);              % Eigenvectors and eigenvalues in smaller dimension
-eigenVecLarge = A * eigVec;             % Eigenvectors in bigger dimension (n x n)
-
-% Reshaping the n-dim eigenvectors into matrices (eigenfaces)
-eigenfaces = [];
-for k = 1:numberofimages
-    c = eigenVecLarge(:,k);
-    eigenfaces{k} = reshape(c,X,Y);
-    eigenfaces{k} = eigenfaces{k}./norm(eigenfaces{k});
-end
-
-
-
-x = diag(eigVal);
-[xc,xci] = sort(x,'descend'); % get largest eigenvalue
-[xciR, xciC] = size(xci);
-
-for e = 1:xciR
-    figure
-    imshow(eigenfaces{e}, [])
-end
-
-% Calculate weights
-weights = zeros(numberofimages, numberofimages);
-for a = 1:numberofimages
-    img = faces_db(:,a)';
-    img = double(img)-meanImage;
-    for j=1:numberofimages
-        w =  img*eigenVecLarge(:,j);
-        weights(a,j) = w;
-    end
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,4 +1,4 @@
-function [eye1, eye2] = eyeMap(Im, mouthPos, facemask)
+function [eye1, eye2, numberOfEyes] = eyeMap(Im, mouthPos)
    
     image = im2uint8(Im);
     
@@ -76,9 +76,9 @@ function [eye1, eye2] = eyeMap(Im, mouthPos, facemask)
     BW( : , 1 : mouthPos(1) - round((1/4)*cols) ) = 0;    % left
     BW( : , mouthPos(1) + round((1/4)*cols) : cols ) = 0; % right
     
-    figure
-    imshow(BW)
-    title('cropped eye map')
+    %figure
+    %imshow(BW)
+    %title('cropped eye map')
     
     %eyemap = immultiply(BW,logical(facemask));
     eyemap = BW;
@@ -89,7 +89,7 @@ function [eye1, eye2] = eyeMap(Im, mouthPos, facemask)
     measurements = regionprops(labeledImage, mm, 'Centroid');
     [a, b] = size(measurements);
     
-    if(a > 1)
+    if(a == 2)
         centroid1 = measurements(1).Centroid;
         centroid2 = measurements(2).Centroid;
 
@@ -99,11 +99,22 @@ function [eye1, eye2] = eyeMap(Im, mouthPos, facemask)
         mm(centroid1(2),centroid1(1),:) = 0;
         mm(centroid2(2),centroid2(1),:) = 0;
 
-        eye1 = centroid1
-        eye2 = centroid2
+        eye1 = centroid1;
+        eye2 = centroid2;
+        numberOfEyes = 2;
+        return
     else
-        eye1 = [0, 0];
-        eye2 = [0, 0];
+        if(a == 1)
+            eye1 = [];
+            eye2 = [];
+            numberOfEyes = 1;
+            return
+        else
+            eye1 = [];
+            eye2 = [];
+            numberOfEyes = 0;
+            return
+        end
 
     end
 

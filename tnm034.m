@@ -1,10 +1,8 @@
 function [ id ] = tnm034( im )
 
-% im: Image of unknown face, RGB-image in uint8format inthe% range [0,255]
+% Check if face in im exists in database
 
-% id: The identity number (integer) of the identified person,
-% i.e.?1?, ?2?,...,?16?for the persons belonging to ?db1? 
-% and ?0?for allother faces.
+load database;
 
 
 end
