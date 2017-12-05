@@ -61,7 +61,7 @@ imshow(face);
 
 clc;
 clear;
-dirname = 'images/TestDB';
+dirname = 'images/DB1';
 files = dir(fullfile(dirname, '*.jpg'));
 files = {files.name}';
 
@@ -83,7 +83,7 @@ n = X*Y;
 faces_db = reshape(faces_db, [n, numberofimages]);
 
 % Run PCA algorithm
-x = double(faces_db);
+x = im2double(faces_db);
 meanImage = mean(x');                   % Find average face vector
 A = bsxfun(@minus, x', mean(x'))';      % Subtract the mean for each vector in faces_db
 C = transpose(A) * A;                   % Covariance matrix (MxM) 
@@ -93,20 +93,31 @@ eigenVecLarge = A * eigVec;             % Eigenvectors in bigger dimension (n x 
 % Reshaping the n-dim eigenvectors into matrices (eigenfaces)
 eigenfaces = [];
 for k = 1:numberofimages
-    c  = eigenVecLarge(:,k);
+    c = eigenVecLarge(:,k);
     eigenfaces{k} = reshape(c,X,Y);
+    eigenfaces{k} = eigenfaces{k}./norm(eigenfaces{k});
 end
+
+
 
 x = diag(eigVal);
 [xc,xci] = sort(x,'descend'); % get largest eigenvalue
-z = [];
 [xciR, xciC] = size(xci);
+
 for e = 1:xciR
-    z = [z, eigenfaces{xci(e)}];
+    figure
+    imshow(eigenfaces{e}, [])
 end
 
-figure
-imshow(z,'Initialmagnification','fit')
-title('eigenfaces')
+% Calculate weights
+weights = zeros(numberofimages, numberofimages);
+for a = 1:numberofimages
+    img = faces_db(:,a)';
+    img = double(img)-meanImage;
+    for j=1:numberofimages
+        w =  img*eigenVecLarge(:,j);
+        weights(a,j) = w;
+    end
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
