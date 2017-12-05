@@ -30,31 +30,31 @@ title('Color corrected');
 face = detectFace(output);
 
 figure
-imshow(faceMask);
+imshow(face);
 
 %Eye positions
-[eyePos1, eyePos2] = eyeMap(output, faceMask);
+%[eyePos1, eyePos2] = eyeMap(output, faceMask);
 
 %Mouth map and mouth position
-[mouthmap, mouthPos] = mouthMap(output);
+%[mouthmap, mouthPos] = mouthMap(output);
 
-rotatedImage = face_orientation(output, eyePos1, eyePos2);
+%rotatedImage = face_orientation(output, eyePos1, eyePos2);
 
 %Crop image
-eyeCenter = round((eyePos1 + eyePos2)./2);
-centerOfImage = round((eyeCenter + mouthPos)./2);
+%eyeCenter = round((eyePos1 + eyePos2)./2);
+%centerOfImage = round((eyeCenter + mouthPos)./2);
 
-xmin = centerOfImage(1) - 125;
-xmax = centerOfImage(1) + 125;
-ymin = centerOfImage(2) - 200;
-ymax = centerOfImage(2) + 150;
+%xmin = centerOfImage(1) - 125;
+%xmax = centerOfImage(1) + 125;
+%ymin = centerOfImage(2) - 200;
+%ymax = centerOfImage(2) + 150;
 
-width = xmax- xmin;
-height = ymax - ymin;
-cropped = imcrop(rotatedImage,[xmin ymin width height]);
+%width = xmax- xmin;
+%height = ymax - ymin;
+%cropped = imcrop(rotatedImage,[xmin ymin width height]);
 
-figure
-imshow(cropped)
+%figure
+%imshow(cropped)
 
 
 %% Load images, run detection and create eigenfaces with PCA 
@@ -69,7 +69,8 @@ for i=1:numel(files)
     fname = fullfile(dirname, files{i});
     img = imread(fname);
     output = colorCorrection(img); % Color correct
-    result = detectFace(output);   % Detect face
+    %result = detectFace(output);   % Detect face
+    result = rgb2gray(output);          % TEMPORARY FOR TEST
     faces_db(:,:,i) = result;
 end
 
@@ -99,13 +100,17 @@ end
 x = diag(eigVal);
 [xc,xci] = sort(x,'descend'); % get largest eigenvalue
 z = [];
-for e = 1:size(xci)
+[xciR, xciC] = size(xci);
+for e = 1:xciR
     z = [z, eigenfaces{xci(e)}];
 end
 
 figure
 imshow(z,'Initialmagnification','fit')
 title('eigenfaces')
+
+figure
+imshow(eigenfaces{1})
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

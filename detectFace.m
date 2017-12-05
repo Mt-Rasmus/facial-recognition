@@ -78,11 +78,6 @@ rotatedImage = face_orientation(input, eyePos1, eyePos2);
 eyeCenter = round((eyePos1 + eyePos2)./2);
 centerOfImage = round((eyeCenter + mouthPos)./2);
 
-figure
-imshow(rotatedImage)
-hold on
-plot(centerOfImage(1), centerOfImage(2), 'c*')
-
 xmin = centerOfImage(1) - 150;
 xmax = centerOfImage(1) + 150;
 ymin = centerOfImage(2) - 200;
@@ -93,6 +88,11 @@ height = ymax - ymin;
 cropped = imcrop(rotatedImage,[xmin ymin width height]);
 
 cropped = imresize(cropped, [400, 250]);
+
+figure
+imshow(cropped)
+hold on
+plot(centerOfImage(1), centerOfImage(2), 'c*')
 
 face = rgb2gray(cropped);
 
