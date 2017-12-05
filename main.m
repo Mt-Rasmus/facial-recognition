@@ -17,18 +17,18 @@ clear;
 close all;
 
 % Read image from database
-input = imread('images/DB1/db1_05.jpg');
+input = imread('images/DB1/db1_02.jpg');
 
 % Color correct image
 output = colorCorrection(input);
 %output = refWhite(output);
 
-figure
-imshow(output);
-title('Color corrected');
-
+%figure
+%mshow(output);
+%title('Color corrected');
+tic
 face = detectFace(output);
-
+toc
 figure
 imshow(face);
 
@@ -69,8 +69,8 @@ for i=1:numel(files)
     fname = fullfile(dirname, files{i});
     img = imread(fname);
     output = colorCorrection(img); % Color correct
-    %result = detectFace(output);   % Detect face
-    result = rgb2gray(output);          % TEMPORARY FOR TEST
+    result = detectFace(output);   % Detect face
+    %result = rgb2gray(output);          % TEMPORARY FOR TEST
     faces_db(:,:,i) = result;
 end
 
@@ -108,9 +108,5 @@ end
 figure
 imshow(z,'Initialmagnification','fit')
 title('eigenfaces')
-
-figure
-imshow(eigenfaces{1})
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
