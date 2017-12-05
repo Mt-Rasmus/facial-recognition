@@ -58,11 +58,11 @@ morphedBinary = enhanceFacemask(binary);
 binary_uint8 = im2uint8(morphedBinary);
 
 % Add original face to face mask
-%facemaskR = immultiply(input(:,:,1), binary_uint8/255);
-%facemaskG = immultiply(input(:,:,2), binary_uint8/255);
-%facemaskB = immultiply(input(:,:,3), binary_uint8/255);
+facemaskR = immultiply(input(:,:,1), binary_uint8/255);
+facemaskG = immultiply(input(:,:,2), binary_uint8/255);
+facemaskB = immultiply(input(:,:,3), binary_uint8/255);
 
-%facemask = cat(3, facemaskR, facemaskG, facemaskB);
+faceMasked = cat(3, facemaskR, facemaskG, facemaskB);
 faceMask = binary_uint8;
 
 %figure
@@ -70,11 +70,11 @@ faceMask = binary_uint8;
 %itle('face mask')
 
 %Mouth map and mouth position
-[mouthmap, mouthPos] = mouthMap(input);
+[mouthmap, mouthPos] = mouthMap(faceMasked);
 
-%figure
-%imshow(mouthmap)
-%title('mouth map')
+figure
+imshow(mouthmap)
+title('mouth map')
 
 %Eye positions
 [eyePos1, eyePos2] = eyeMap(input, mouthPos, faceMask);
@@ -92,21 +92,21 @@ rotatedImage = face_orientation(input, eyePos1, eyePos2);
 eyeCenter = round((eyePos1 + eyePos2)./2);
 centerOfImage = round((eyeCenter + mouthPos)./2);
 eyedist = round(abs(eyePos1 - eyePos2));
-eye_mouth_dist = round(abs(eyeCenter - mouthPos)); 
+eye_mouth_dist = round(abs(eyeCenter - mouthPos))
 
 % xmin = centerOfImage(1) - 150;
 % xmax = centerOfImage(1) + 150;
 % ymin = centerOfImage(2) - 200;
 % ymax = centerOfImage(2) + 100;
 
-xmin = max((eyeCenter(1)-(8/9*eyedist(1))), 0);
-xmax = xmin + 16/9 * eyedist(1);
-ymin = max((eyeCenter(2)-(3/4 * eye_mouth_dist(2))), 0);
-ymax = ymin + 5/2 * eye_mouth_dist(2);
+xmin = max((eyeCenter(1) - eyedist(1)), 0);
+xmax = xmin + 2 * eyedist(1);
+ymin = max((eyeCenter(2)-(3/5 * eye_mouth_dist(2))), 0);
+ymax = ymin + 11/5 * eye_mouth_dist(2);
 % 
-% width = xmax- xmin;
-% height = ymax - ymin;
-cropped = imcrop(rotatedImage,[xmin ymin xmax ymax]);
+ width = xmax- xmin;
+ height = ymax - ymin;
+cropped = imcrop(rotatedImage,[xmin ymin width height]);
 
 cropped = imresize(cropped, [400, 250]);
 
