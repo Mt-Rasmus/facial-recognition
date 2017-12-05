@@ -91,15 +91,22 @@ rotatedImage = face_orientation(input, eyePos1, eyePos2);
 %Crop image
 eyeCenter = round((eyePos1 + eyePos2)./2);
 centerOfImage = round((eyeCenter + mouthPos)./2);
+eyedist = round(abs(eyePos1 - eyePos2));
+eye_mouth_dist = round(abs(eyeCenter - mouthPos)); 
 
-xmin = centerOfImage(1) - 150;
-xmax = centerOfImage(1) + 150;
-ymin = centerOfImage(2) - 200;
-ymax = centerOfImage(2) + 100;
+% xmin = centerOfImage(1) - 150;
+% xmax = centerOfImage(1) + 150;
+% ymin = centerOfImage(2) - 200;
+% ymax = centerOfImage(2) + 100;
 
-width = xmax- xmin;
-height = ymax - ymin;
-cropped = imcrop(rotatedImage,[xmin ymin width height]);
+xmin = max((eyeCenter(1)-(8/9*eyedist(1))), 0);
+xmax = xmin + 16/9 * eyedist(1);
+ymin = max((eyeCenter(2)-(3/4 * eye_mouth_dist(2))), 0);
+ymax = ymin + 5/2 * eye_mouth_dist(2);
+% 
+% width = xmax- xmin;
+% height = ymax - ymin;
+cropped = imcrop(rotatedImage,[xmin ymin xmax ymax]);
 
 cropped = imresize(cropped, [400, 250]);
 
