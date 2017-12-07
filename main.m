@@ -20,11 +20,17 @@ createDatabase(images_folder);
 
 %% Read face image and check if face exists in database
 
-% image_name = 'images/DB1/db1_01.jpg';
-% im = imread(image_name);
-% [ id ] = tnm034(im);
+ clc;
+ clear;
+ tic
+ image_name = 'images/DB1/db1_04.jpg'; %db1_03 g?r inte att detecta
+ im = imread(image_name);
+ [ id ] = tnm034(im);
+ toc
 
-% if id > 0  =>  face exists in database
+% id > 0  =>  face exists in database
+% id = 0  =>  face does not exists in database
+% id = -1 =>  face could not get detected
 
 
 %% OLD MAIN 

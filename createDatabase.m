@@ -2,7 +2,7 @@ function [ ] = createDatabase( images_folder )
 
 files = dir(fullfile(images_folder, '*.jpg'));
 files = {files.name}';
-numDetectedFaces = 0;
+numFacesNotDetected = 0;
 
 for i=1:numel(files)
     fname = fullfile(images_folder, files{i});
@@ -10,19 +10,21 @@ for i=1:numel(files)
     output = colorCorrection(img); % Color correct
     result = detectFace(output);   % Detect face
     if( isempty(result) )
+        numFacesNotDetected = numFacesNotDetected - 1;
         continue
+    else
+        faces_db(:,:,i+numFacesNotDetected) = result;
     end
-    numDetectedFaces = numDetectedFaces + 1;
-    faces_db(:,:,i) = result;
 end
 
 numberofimages = numel(files);
+[aa,bb,numDetectedFaces] = size(faces_db);
 disp(['Loaded ', num2str(numDetectedFaces), ' of ', num2str(numberofimages), ' faces successfully.'])
 
 [X,Y] = size(faces_db(:,:,1));
 n = X*Y;
 % Reshape images to vectors
-faces_db = reshape(faces_db, [n, numberofimages]);
+faces_db = reshape(faces_db, [n, numDetectedFaces]);
 
 % Run PCA algorithm
 x = im2double(faces_db);
@@ -34,7 +36,7 @@ eigenVecLarge = A * eigVec;             % Eigenvectors in bigger dimension (n x 
 
 % Reshaping the n-dim eigenvectors into matrices (eigenfaces)
 eigenfaces = [];
-for k = 1:numberofimages
+for k = 1:numDetectedFaces
     c = eigenVecLarge(:,k);
     eigenfaces{k} = reshape(c,X,Y);
     eigenfaces{k} = eigenfaces{k}./norm(eigenfaces{k});
@@ -50,11 +52,11 @@ for e = 1:xciR
 end
 
 % Calculate weights
-weights = zeros(numberofimages, numberofimages);
-for a = 1:numberofimages
+weights = zeros(numDetectedFaces, numDetectedFaces);
+for a = 1:numDetectedFaces
     img = faces_db(:,a)';
     img = double(img)-meanImage;
-    for j=1:numberofimages
+    for j=1:numDetectedFaces
         w =  img*eigenVecLarge(:,j);
         weights(a,j) = w;
     end
