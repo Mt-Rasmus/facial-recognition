@@ -1,8 +1,7 @@
 
 % Author: Anton Sterner, antst719
 
-% facial orientation adjustment, image and eye positions is input, returns scaled
-% and rotated image
+% Rotate point2 around point1
 function [ point2rotated ] = rotate_point(angle, point1, point2)
 
 % rotate point2 'angle' degrees to follow the image
