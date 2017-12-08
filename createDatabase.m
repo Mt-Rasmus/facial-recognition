@@ -6,6 +6,7 @@ numFacesNotDetected = 0;
 
 for i=1:numel(files)
     fname = fullfile(images_folder, files{i});
+    disp(['Loading ', num2str(fname), '..'])
     img = imread(fname);
     output = colorCorrection(img); % Color correct
     result = detectFace(output);   % Detect face
@@ -28,8 +29,9 @@ faces_db = reshape(faces_db, [n, numDetectedFaces]);
 
 % Run PCA algorithm
 x = im2double(faces_db);
-meanImage = mean(x');                   % Find average face vector
-A = bsxfun(@minus, x', mean(x'))';      % Subtract the mean for each vector in faces_db
+meanImage = mean(x,2);                   % Find average face vector
+
+A = bsxfun(@minus, x, meanImage);      % Subtract the mean for each vector in faces_db
 C = transpose(A) * A;                   % Covariance matrix (MxM) 
 [eigVec, eigVal] = eig(C);              % Eigenvectors and eigenvalues in smaller dimension
 eigenVecLarge = A * eigVec;             % Eigenvectors in bigger dimension (n x n)
@@ -54,16 +56,16 @@ end
 % Calculate weights
 weights = zeros(numDetectedFaces, numDetectedFaces);
 for a = 1:numDetectedFaces
-    img = faces_db(:,a)';
+    img = faces_db(:,a);
     img = double(img)-meanImage;
     for j=1:numDetectedFaces
-        w =  img*eigenVecLarge(:,j);
-        weights(a,j) = w;
+        w =  img' * eigenVecLarge(:,j);
+        weights(j,a) = w;
     end
 end
 
 % Saving weight matrix, eigenvectors and mean image to database
-save('database.mat', 'eigenVecLarge', 'weights', 'meanImage');
+save('databaseTEST.mat', 'eigenVecLarge', 'weights', 'meanImage');
 
 end
 
