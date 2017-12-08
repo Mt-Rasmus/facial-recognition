@@ -42,8 +42,10 @@ for k = 1:numDetectedFaces
     c = eigenVecLarge(:,k);
     eigenfaces{k} = reshape(c,X,Y);
     eigenfaces{k} = eigenfaces{k}./norm(eigenfaces{k});
+    
 end
-
+    eigenVecLarge = eigenVecLarge./norm(eigenVecLarge);
+    
 x = diag(eigVal);
 [xc,xci] = sort(x,'descend'); % get largest eigenvalue
 [xciR, xciC] = size(xci);
@@ -56,10 +58,11 @@ end
 % Calculate weights
 weights = zeros(numDetectedFaces, numDetectedFaces);
 for a = 1:numDetectedFaces
-    img = faces_db(:,a);
-    img = double(img)-meanImage;
+    %img = faces_db(:,a);
+    %img = double(img)-meanImage;
+
     for j=1:numDetectedFaces
-        w =  img' * eigenVecLarge(:,j);
+        w =  eigenVecLarge(:,j)' * A(:,a);
         weights(j,a) = w;
     end
 end

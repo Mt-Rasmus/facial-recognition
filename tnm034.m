@@ -26,12 +26,12 @@ function [ bestID ] = tnm034( image )
     imshow(face2, [])
     title('Candidate face with subtracted mean face')
     
-    [w, h] = size(weights);
-    numOfFacesInDB = w;
+    [w1, h] = size(weights);
+    numOfFacesInDB = w1;
 
     % Calculate face weights vector
     for i = 1:numOfFacesInDB
-        w =  face' * eigenVecLarge(:,i);
+        w = eigenVecLarge(:,i)' * face;
         faceWeights(i) = w;
     end    
         

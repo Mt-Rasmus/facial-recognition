@@ -23,7 +23,7 @@ createDatabase(images_folder);
  clc;
  clear;
  tic
- image_name = 'images/DB1/db1_15.jpg'; %db1_03 g?r inte att detecta
+ image_name = 'images/DB1/db1_05.jpg'; %db1_03 g?r inte att detecta
  im = imread(image_name);
  [ id ] = tnm034(im);
  toc
