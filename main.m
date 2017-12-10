@@ -29,7 +29,7 @@ clc;
 clear;
 tic
 image_name = 'images/DB1/db1_07.jpg'; 
-threshold = 2.0;
+threshold = 4.0;
 im = imread(image_name);
 
 [ id, message ] = tnm034(im, threshold);
