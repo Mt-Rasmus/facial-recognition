@@ -1,4 +1,4 @@
-function [ id, message ] = tnm034( image, threshold )
+function [ id ] = tnm034( image, threshold )
     % Check if face in im exists in database
     % bestID > 0  =>  face exists in database. ID corresponding to the
     %                 image recognized is returned
@@ -15,7 +15,6 @@ function [ id, message ] = tnm034( image, threshold )
     % Return if face could not get detected
     if isempty(face)
         id = -1;
-        message = 'The face could not get detected!';
         return
     end
 
@@ -58,11 +57,9 @@ function [ id, message ] = tnm034( image, threshold )
     % Check if best weight found is less than the threshold
     if bestWeight <= threshold
         id = bestID;
-        message = 'Face exists in the database!';
         return
     else
         id = 0;
-        message = 'Face does not exist in the database!';
         return
     end
  

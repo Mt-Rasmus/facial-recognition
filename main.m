@@ -28,11 +28,21 @@ createDatabase(images_folder);
 clc;
 clear;
 tic
-image_name = 'images/DB1/db1_10.jpg'; 
+image_name = 'images/DB1/db1_05.jpg'; 
+message = '';
 im = imread(image_name);
-
-[ id, message ] = tnm034(im);
+[ id ] = tnm034(im);
 toc
+
+if id > 0
+    message = 'Face exists in database!';
+end
+if id == 0
+    message = 'Face does not exist in database!';
+end
+if id == -1
+    message = 'Face could not get detected!';
+end
  
 % Display result
 disp(['id = ', num2str(id)])
