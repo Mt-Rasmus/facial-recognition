@@ -1,8 +1,8 @@
 %{
 %    TNM034 - Facial Recognition
-%    HT2017 - Link?ping University
+%    HT2017 - Linkoping University
 %
-%    Developed by: Jesper Lund, Rasmus St?hl, Tobias Matts, Anton Sterner
+%    Developed by: Jesper Lund, Rasmus Stahl, Tobias Matts, Anton Sterner
 %
 %    Process to recognize candidate face:
 %        1. Load image and color correct using Gray World Assumption
@@ -13,7 +13,7 @@
 %        eigenfaces
 %        6. Calculate minimum euclidean distance to each eigenface
 %        7. Check if mimimum distance is close enough to be able to say
-%        that the candidate face exists in the database%%
+%        that the candidate face exists in the database
 %}
 
 %% Create database with eigenfaces
@@ -28,11 +28,10 @@ createDatabase(images_folder);
 clc;
 clear;
 tic
-image_name = 'images/DB1/db1_07.jpg'; 
-threshold = 4.0;
+image_name = 'images/DB1/db1_10.jpg'; 
 im = imread(image_name);
 
-[ id, message ] = tnm034(im, threshold);
+[ id, message ] = tnm034(im);
 toc
  
 % Display result

@@ -7,6 +7,7 @@ function [ id, message ] = tnm034( image, threshold )
 
     % Load pre-calculated eigenfaces and corresponding matrices
     load databaseFINAL;
+    threshold = 4.0;
 
     output = colorCorrection(image);    % Color correct
     face = detectFace(output);          % Detect face
