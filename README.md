@@ -1,2 +1,9 @@
 # Facial-Recognition
-TNM034 Facial Recognition Project
+Facial detection and recognition using eigenfaces (*Principal Component Analysis*)
+
+
+### Authors
+- Jesper Lund
+- Rasmus Ståhl
+- Anton Sterner
+- Tobias Matts
