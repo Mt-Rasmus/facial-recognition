@@ -8,9 +8,6 @@ function [eye1, eye2, numberOfEyes] = eyeMap(Im, mouthPos)
     Cb = ycbcrmap(:,:,2);
     Cr = ycbcrmap(:,:,3);
 
-    %normCb = double(Cb)./max(max(double(Cb)));
-    %normCbPow = power(normCb,2);
-    %CbPow = normCbPow.*255;
     dCb = double(Cb);
     CbPow = power(dCb,2);
 
@@ -18,9 +15,6 @@ function [eye1, eye2, numberOfEyes] = eyeMap(Im, mouthPos)
     CbPow = normCbPow.*255;
 
     CrNeg = 255 - Cr;
-    %normCrNeg = double(CrNeg)./max(max(double(CrNeg)));
-    %CrNegPow = power(normCrNeg,2);
-    %CrNegPow = CrNegPow .*255;
     dCrNeg = double(CrNeg);
     CrNegPow = power(dCrNeg,2);
 
@@ -59,7 +53,7 @@ function [eye1, eye2, numberOfEyes] = eyeMap(Im, mouthPos)
 
     for row = 1:rows
         for col = 1:cols
-            if(eyeMapFinal(row,col) > 205)
+            if(eyeMapFinal(row,col) > 201)
                 eyeMapFinal(row,col) = 255;
             else
                 eyeMapFinal(row,col) = 0;
@@ -70,17 +64,16 @@ function [eye1, eye2, numberOfEyes] = eyeMap(Im, mouthPos)
     BW = logical(eyeMapFinal);
     
     % Cropping eyemap 
-    disp(mouthPos)
+    disp(mouthPos);
     BW( mouthPos(2) - round((1/7)*rows) : rows , : ) = 0; % bottom
-    BW( 1 : round((1/3.5)*rows), :) = 0;                  % top
-    BW( : , 1 : mouthPos(1) - round((1/4)*cols) ) = 0;    % left
+    BW( 1 : round((1/3.0)*rows), :) = 0;                  % top
+    BW( : , 1 : mouthPos(1) - round((1/5)*cols) ) = 0;    % left
     BW( : , mouthPos(1) + round((1/4)*cols) : cols ) = 0; % right
     
     %figure
     %imshow(BW)
     %title('cropped eye map')
     
-    %eyemap = immultiply(BW,logical(facemask));
     eyemap = BW;
     
     mm = bwareafilt(eyemap,2); % Selecting 2 largest object of image

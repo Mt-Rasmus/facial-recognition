@@ -9,12 +9,11 @@ width = size(input,2);
 %Initialize the output images
 binary = zeros(height,width);
 
-%Convert the image from RGB to YCbCr
+%Convert the image from RGB to YCbCr color space
 img_ycbcr = rgb2ycbcr(input);
 Y = img_ycbcr(:,:,1);
 Cb = img_ycbcr(:,:,2);
 Cr = img_ycbcr(:,:,3);
-
 
 %Detect Skin with static thresholding
 [r,c,v] = find( Cr >= 125 & Cr<=183);
@@ -46,8 +45,9 @@ faceMasked = cat(3, facemaskR, facemaskG, facemaskB);
 %Eye positions
 [eyePos1, eyePos2, numberOfEyes] = eyeMap(input, mouthPos);
 
+% Return if two eyes were not detected
 if( numberOfEyes ~= 2 )
-    disp('Two eyes not detected! Continuing with next image...')
+    disp('Two eyes not detected!')
     face = [];
     return 
 end

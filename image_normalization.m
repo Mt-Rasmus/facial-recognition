@@ -1,4 +1,5 @@
-function [ cropped ] = image_normalization( input, eyePos1, eyePos2, mouthPos ) 
+function [ cropped ] = image_normalization( input, eyePos1, eyePos2, mouthPos )
+% Normalize face given eyes and mouth positions
 
 %Crop image
 eyeCenter = round((eyePos1 + eyePos2)./2);

@@ -20,8 +20,7 @@ mm = uint8(mmNormalized);
 
 r = 20;
 SE = strel('sphere', r); % spherical structuring element
-
-mm = imdilate(mm,SE); % DIALATION:
+mm = imdilate(mm,SE); % DILATION:
 %mm = imerode(mm,SE); % EROSION
 
 [rows, cols] = size(mm);
